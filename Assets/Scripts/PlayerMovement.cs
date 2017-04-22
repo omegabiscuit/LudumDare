@@ -8,6 +8,8 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour {
     Animator anim;
     public float maxSpeed = 10f;
+    private GameObject currentObject;
+    ArrayList Inventory = new ArrayList();
 	// Use this for initialization
 	void Start () {
      
@@ -35,7 +37,11 @@ public class PlayerMovement : MonoBehaviour {
         }
         if (Input.GetKey(KeyCode.E))
         {
-            
+            if (currentObject != null)
+            {
+                Inventory.Add(currentObject);
+                currentObject.SetActive(false);
+            }
         }
 
     }
@@ -45,11 +51,20 @@ public class PlayerMovement : MonoBehaviour {
         //Check the provided Collider2D parameter other to see if it is tagged "PickUp", if it is...
         if (other.gameObject.CompareTag("PickUp"))
         {
-            other.gameObject.SetActive(false);
+            currentObject = other.gameObject;
+     
         }
         if (other.gameObject.CompareTag("Adult"))
         {
             print("you lose");
         }
    }
+
+    void OnTriggerEnd2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("PickUp"))
+        {
+            currentObject = null;
+        }
+    }
 }

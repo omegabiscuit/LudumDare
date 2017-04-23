@@ -31,6 +31,8 @@ public class BattleScript : MonoBehaviour {
 	private int insultState = 2;
 	private int handlingInsultState = 3;
 	private int enemyAttackState = 4;
+	private int buffState = 5;
+	private int fightWonState = 6;
 
 
 	/****Default State****/
@@ -61,6 +63,15 @@ public class BattleScript : MonoBehaviour {
 	public string insultToEnemyResultText;
 	public int displayNumber;
 
+
+	/****Buff Handling****/
+	public string[] buffTextOptions;
+	public string buffText;
+	public bool powerApplied;
+
+
+	/***Fight Won State***/
+	public string fightWon = "Victory!";
 
 	// Use this for initialization
 	void Start () {
@@ -106,6 +117,13 @@ public class BattleScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+		/****Fight Won****/
+		if((currentState == defaultState || currentState == enemyAttackState) && enemyScript.HP <= 0) {
+			currentState = fightWonState;
+			handleFightWon();
+		}
+
 		
 		if(currentState == defaultState) { /****Default State****/
 			defaultStateNavigation();
@@ -115,6 +133,8 @@ public class BattleScript : MonoBehaviour {
 			handleInsultToEnemy();
 		} else if (currentState == enemyAttackState) {/****Enemy Attack State****/
 			handleInsultToPlayer();
+		} else if (currentState == buffState) {
+			handleBuffState();
 		}
 
 		if(riledUpPercent == 100) {
@@ -196,6 +216,16 @@ public class BattleScript : MonoBehaviour {
 				GUI.Label(new Rect(210, 500, 100, 20), playerResponseText, defaultStyle);
 			}
 		}
+
+		/****Buff state****/
+		if(currentState == buffState) {
+			GUI.Label(new Rect(210, 500, 100, 20), buffText, defaultStyle);
+		}
+
+		/****Fight Won State****/
+		if(currentState == fightWonState) {
+			GUI.Label(new Rect(210, 500, 100, 20), fightWon, statStyle);
+		}
 	}
 
 
@@ -239,6 +269,10 @@ public class BattleScript : MonoBehaviour {
 			if(currentSelection == insultSelection){
 				currentState = insultState;
 				currentSelection = 0;
+			}
+			if(currentSelection == buffSelection) {
+				currentState = buffState;
+				powerApplied = false;
 			}
 		}
 	}
@@ -288,9 +322,9 @@ public class BattleScript : MonoBehaviour {
 	void handleInsultToEnemy() {
 		if(insulted) {
 			insultToEnemyText = "You called " + enemyScript.enemyName.ToLower() + " " + insultChosen.ToLower() +  ".";
-			int damage = Random.Range(0, 3);
+			int damage = Random.Range(0 + powerMultiplier, 3 + powerMultiplier);
 			if(arrayContains(enemyScript.criticalWords, insultChosen)) {
-				damage = Random.Range(3, 6);
+				damage = Random.Range(3 + powerMultiplier, 6 + powerMultiplier);
 			}
 
 			if(damage == 0) {
@@ -350,6 +384,28 @@ public class BattleScript : MonoBehaviour {
 			} else {
 				displayNumber++;
 			}
+		}
+	}
+
+	void handleBuffState() {
+		if(!powerApplied) {
+			powerMultiplier++;
+			powerApplied = true;
+			int buffTextIndx = Random.Range(0, buffTextOptions.Length - 1);
+			buffText = buffTextOptions[buffTextIndx];
+		}
+		if(Input.GetKeyDown(KeyCode.E)) {
+			textContinueSound.GetComponent<AudioSource>().Play();
+			displayNumber = 0;
+			currentState = enemyAttackState;
+			insulted = true;
+		}
+	}
+
+	void handleFightWon() {
+		if(Input.GetKeyDown(KeyCode.E)) {
+			textContinueSound.GetComponent<AudioSource>().Play();
+			Debug.Log("Go back to overworld");
 		}
 	}
 

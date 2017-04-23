@@ -7,9 +7,6 @@ public class Adult : MonoBehaviour {
 
     //public GameObject player;
     private Vector3 startPosition;
-    private bool wandering = true;
-    private bool chasing = false;
-    private float wanderSpeed = 0.5f;
     private GameObject target;
 
     

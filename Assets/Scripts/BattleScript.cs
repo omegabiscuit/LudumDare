@@ -113,6 +113,8 @@ public class BattleScript : MonoBehaviour {
 		powerMultiplier = 1;
 
 		enemyScript = enemy.GetComponent<EnemyScript>();
+
+		powerMultiplier = 0;
 	}
 	
 	// Update is called once per frame

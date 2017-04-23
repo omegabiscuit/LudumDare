@@ -135,6 +135,8 @@ public class BattleScript : MonoBehaviour {
 			handleInsultToPlayer();
 		} else if (currentState == buffState) {
 			handleBuffState();
+		} else if (currentState == fightWonState) {
+			handleFightWon();
 		}
 
 		if(riledUpPercent == 100) {

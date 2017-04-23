@@ -31,8 +31,6 @@ public class BattleScript : MonoBehaviour {
 	private int insultState = 2;
 	private int handlingInsultState = 3;
 	private int enemyAttackState = 4;
-	
-
 
 
 	/****Default State****/
@@ -41,6 +39,7 @@ public class BattleScript : MonoBehaviour {
 	private int itemSelection = 3;
 	private int humdingerSelection = 4;
 	private bool humdingerReady;
+
 
 	/****Insult State****/
 	public string[] insults;
@@ -51,9 +50,11 @@ public class BattleScript : MonoBehaviour {
 	public string enemyInsultText;
 	public string playerResponseText;
 
+
 	/***Current Stuff****/
 	public int currentState;
 	public int currentSelection;
+
 
 	/****Insult Handling****/
 	public string insultToEnemyText;
@@ -65,7 +66,7 @@ public class BattleScript : MonoBehaviour {
 	void Start () {
 		//Maps words to magnitude of the effect they have on the player
 		wordToPower = new Dictionary<string,int>();
-		wordToPower.Add("Jerk", 1);
+		wordToPower.Add("Weewee", 1);
 		wordToPower.Add("Poot", 1);
 		wordToPower.Add("Milk", 0);
 		wordToPower.Add("Bubby", 0);
@@ -286,7 +287,7 @@ public class BattleScript : MonoBehaviour {
 
 	void handleInsultToEnemy() {
 		if(insulted) {
-			insultToEnemyText = "You called " + enemyScript.enemyName + " " + insultChosen +  ".";
+			insultToEnemyText = "You called " + enemyScript.enemyName.ToLower() + " " + insultChosen.ToLower() +  ".";
 			int damage = Random.Range(0, 3);
 			if(arrayContains(enemyScript.criticalWords, insultChosen)) {
 				damage = Random.Range(3, 6);
@@ -297,7 +298,7 @@ public class BattleScript : MonoBehaviour {
 			} else if(damage > 0 && damage <= 2) {
 				insultToEnemyResultText = enemyScript.enemyName + " has low self esteem, and that " + System.Environment.NewLine + "didn't help.";
 			} else if(damage >= 3 && damage <= 5) {
-				insultToEnemyResultText = enemyScript.enemyName + " is suffering some severe " + System.Environment.NewLine + "emotional damage.";
+				insultToEnemyResultText = enemyScript.enemyName + " almost dropped his lollypop, but " + System.Environment.NewLine + "his hands are too sticky.";
 			}
 			displayNumber = 0;
 			insulted = false;
@@ -328,7 +329,7 @@ public class BattleScript : MonoBehaviour {
 				int insultPower = wordToPower[insult];
 				riledUpPercent += Random.Range((insultPower + 1)*5, (insultPower + 1)*11);
 
-				enemyInsultText = enemyScript.enemyName + " called you " + insult;
+				enemyInsultText = enemyScript.enemyName + " called you " + insult.ToLower() + ".";
 				if(insultPower == 0) {
 					playerResponseText = "What?";
 				} else if(insultPower == 1) {
